@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_music_player/constants/app_color.dart';
 import 'package:flutter_music_player/model/music_model.dart';
+import 'package:flutter_music_player/screens/music_list_screen.dart';
 import 'package:flutter_music_player/widgets/player_buttons.dart';
 
 class PlayerScreen extends StatefulWidget {
-  PlayerScreen({super.key});
+  const PlayerScreen({super.key});
 
   @override
   State<PlayerScreen> createState() => _PlayerScreenState();
@@ -15,6 +15,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
   int _currentPlayingItem = 0;
   double _currentPlayback = 0;
 
+  int get currentPlayingItem {
+    return _currentPlayingItem;
+  }
+
   String secToMinConv(double time) {
     final min = time ~/ 60;
     final sec = time % 60;
@@ -23,8 +27,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.top]);
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+    //     overlays: [SystemUiOverlay.top]);
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppColor.bgColor,
@@ -38,7 +42,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   PlayerButtons(
-                    size: size.width * 0.16,
+                    size: size.width * 0.15,
                     child: Icon(
                       musicList[_currentPlayingItem].isFav
                           ? Icons.favorite
@@ -54,11 +58,19 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         fontWeight: FontWeight.bold),
                   ),
                   PlayerButtons(
-                    size: size.width * 0.16,
+                    size: size.width * 0.15,
                     child: const Icon(
                       Icons.menu,
                       color: AppColor.secondaryTextColor,
                     ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MusicListScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -125,7 +137,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
+                padding: EdgeInsets.only(bottom: size.height * 0.05),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -134,13 +146,16 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       child: const Icon(
                         Icons.skip_previous_rounded,
                         color: AppColor.secondaryTextColor,
+                        size: 30,
                       ),
                     ),
                     PlayerButtons(
                       size: size.width * 0.2,
+                      color: const [AppColor.blueTopDark, AppColor.blue],
                       child: const Icon(
                         Icons.pause_rounded,
-                        color: AppColor.secondaryTextColor,
+                        color: AppColor.white,
+                        size: 30,
                       ),
                     ),
                     PlayerButtons(
@@ -148,6 +163,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       child: const Icon(
                         Icons.skip_next_rounded,
                         color: AppColor.secondaryTextColor,
+                        size: 30,
                       ),
                     )
                   ],
