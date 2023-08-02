@@ -14,6 +14,7 @@ class PlayerScreen extends StatefulWidget {
 class _PlayerScreenState extends State<PlayerScreen> {
   int _currentPlayingItem = 0;
   double _currentPlayback = 0;
+  bool pause = true;
 
   int get currentPlayingItem {
     return _currentPlayingItem;
@@ -49,6 +50,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           : Icons.favorite_border,
                       color: AppColor.secondaryTextColor,
                     ),
+                    onTap: () {
+                      setState(() {
+                        musicList[_currentPlayingItem].isFav =
+                            !musicList[_currentPlayingItem].isFav;
+                      });
+                    },
                   ),
                   const Text(
                     "PLAYING NOW",
@@ -63,13 +70,18 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       Icons.menu,
                       color: AppColor.secondaryTextColor,
                     ),
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      int selectedIndex = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const MusicListScreen(),
+                          builder: (context) => MusicListScreen(
+                            selectedIndex: _currentPlayingItem,
+                          ),
                         ),
                       );
+                      setState(() {
+                        _currentPlayingItem = selectedIndex;
+                      });
                     },
                   ),
                 ],
@@ -148,15 +160,36 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         color: AppColor.secondaryTextColor,
                         size: 30,
                       ),
+                      onTap: () {
+                        setState(() {
+                          _currentPlayback = 0;
+                          if (_currentPlayingItem == 0) {
+                            _currentPlayingItem = musicList.length - 1;
+                          } else {
+                            _currentPlayingItem--;
+                          }
+                        });
+                      },
                     ),
                     PlayerButtons(
                       size: size.width * 0.2,
                       color: const [AppColor.blueTopDark, AppColor.blue],
-                      child: const Icon(
-                        Icons.pause_rounded,
-                        color: AppColor.white,
-                        size: 30,
-                      ),
+                      child: pause
+                          ? const Icon(
+                              Icons.pause_rounded,
+                              color: AppColor.white,
+                              size: 30,
+                            )
+                          : const Icon(
+                              Icons.play_arrow,
+                              color: AppColor.white,
+                              size: 30,
+                            ),
+                      onTap: () {
+                        setState(() {
+                          pause = !pause;
+                        });
+                      },
                     ),
                     PlayerButtons(
                       size: size.width * 0.2,
@@ -165,7 +198,17 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         color: AppColor.secondaryTextColor,
                         size: 30,
                       ),
-                    )
+                      onTap: () {
+                        setState(() {
+                          _currentPlayback = 0;
+                          if (_currentPlayingItem == musicList.length - 1) {
+                            _currentPlayingItem = 0;
+                          } else {
+                            _currentPlayingItem++;
+                          }
+                        });
+                      },
+                    ),
                   ],
                 ),
               ),

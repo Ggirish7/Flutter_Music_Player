@@ -3,7 +3,7 @@ class MusicModel {
   final String imageUrl;
   final String artist;
   final double length;
-  late final bool isFav;
+  late bool isFav;
 
   MusicModel({
     required this.name,
